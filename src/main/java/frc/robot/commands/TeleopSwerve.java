@@ -17,16 +17,15 @@ public class TeleopSwerve extends CommandBase {
     private double translationSup;
     private double strafeSup;
     private double rotationSup;
-    private BooleanSupplier robotCentricSup;
+    private boolean robotCentricSup;
     public TeleopSwerve(Swerve s_Swerve, XboxController controller, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
-        controller = new XboxController(0);
-        this.translationSup = controller.getLeftY();
-        this.strafeSup = controller.getLeftX();
-        this.rotationSup = controller.getRightX();
-        this.robotCentricSup = robotCentricSup;
+        this.translationSup = Constants.controller.getLeftY();
+        this.strafeSup = Constants.controller.getLeftX();
+        this.rotationSup = Constants.controller.getRightX();
+        this.robotCentricSup = Constants.controller.getLeftBumper();
     }
 
     @Override
@@ -40,7 +39,7 @@ public class TeleopSwerve extends CommandBase {
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
             rotationVal * Constants.Swerve.maxAngularVelocity, 
-            !robotCentricSup.getAsBoolean(), 
+            !robotCentricSup, 
             true
         );
     }
