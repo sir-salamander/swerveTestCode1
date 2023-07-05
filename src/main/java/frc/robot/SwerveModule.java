@@ -4,7 +4,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
@@ -12,6 +13,7 @@ import frc.lib.util.SwerveModuleConstants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 public class SwerveModule {
@@ -19,8 +21,8 @@ public class SwerveModule {
     private Rotation2d angleOffset;
     private Rotation2d lastAngle;
 
-    private TalonFX mAngleMotor;
-    private TalonFX mDriveMotor;
+    private WPI_TalonFX mAngleMotor;
+    private WPI_TalonFX mDriveMotor;
     private CANCoder angleEncoder;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
@@ -30,15 +32,15 @@ public class SwerveModule {
         this.angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANCoder(moduleConstants.cancoderID);
+        angleEncoder = new CANCoder(moduleConstants.cancoderID, "CANivore");
         configAngleEncoder();
 
         /* Angle Motor Config */
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        mAngleMotor = new WPI_TalonFX(moduleConstants.angleMotorID, "CANivore");
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        mDriveMotor = new WPI_TalonFX(moduleConstants.driveMotorID, "CANivore");
         configDriveMotor();
 
         lastAngle = getState().angle;
