@@ -118,10 +118,16 @@ public class Swerve extends SubsystemBase {
   public void periodic() {
     swerveOdometry.update(getYaw(), getModulePositions());
 
-    for(SwerveModule mod :mSwerveMods) {
-      SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-      SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-      SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+    // for(SwerveModule mod :mSwerveMods) {
+    //   SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+    //   SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+    //   SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+    // }
+  }
+
+  public void setAllAngles() {
+    for(SwerveModule mod : mSwerveMods) {
+      mod.setAngle(new SwerveModuleState(0,new Rotation2d(0)));
     }
   }
 }
