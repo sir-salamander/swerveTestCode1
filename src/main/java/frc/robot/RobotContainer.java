@@ -18,19 +18,19 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final static Joystick driver = new Joystick(0);
+    private final Joystick driver = new Joystick(0);
 
     /* Drive Controls */
-    public final static int translationAxis = XboxController.Axis.kLeftY.value;
-    public final static int strafeAxis = XboxController.Axis.kLeftX.value;
-    public final static int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    public final static JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    public final static JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
-    public final static Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -62,10 +62,11 @@ public class RobotContainer {
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
-     * @return 
+     *
+     * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-      // An ExampleCommand will run in autonomous
-      return new auto();
-  }
-  }
+        // An ExampleCommand will run in autonomous
+        return new auto();
+    }
+}
