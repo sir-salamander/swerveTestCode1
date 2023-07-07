@@ -82,9 +82,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Swerve swerve = m_robotContainer.getSwerve();
+    // Swerve swerve = m_robotContainer.getSwerve();
     
-    swerve.setAllAngles();
+    // swerve.setAllAngles();
     
   }
 
