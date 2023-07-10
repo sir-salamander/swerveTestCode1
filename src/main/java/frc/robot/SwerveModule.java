@@ -23,11 +23,14 @@ public class SwerveModule {
     private WPI_TalonFX mDriveMotor;
     private CANCoder angleEncoder;
 
+    private boolean isDriveInverted;
+
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
-    public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
+    public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants, boolean isDriveInverted){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
+        this.isDriveInverted = isDriveInverted;
         
         /* Angle Encoder Config */
         angleEncoder = new CANCoder(moduleConstants.cancoderID, "CANivore");
@@ -98,7 +101,7 @@ public class SwerveModule {
     private void configDriveMotor(){        
         mDriveMotor.configFactoryDefault();
         mDriveMotor.configAllSettings(Robot.ctreConfigs.swerveDriveFXConfig);
-        mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert);
+        mDriveMotor.setInverted(isDriveInverted ? !Constants.Swerve.driveMotorInvert : Constants.Swerve.driveMotorInvert);
         mDriveMotor.setNeutralMode(Constants.Swerve.driveNeutralMode);
         mDriveMotor.setSelectedSensorPosition(0);
     }
