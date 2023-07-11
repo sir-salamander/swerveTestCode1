@@ -1,9 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -29,6 +32,23 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+
+    private boolean hasTarget = new limeLight().hasTarget();
+    private double getXAngle = new limeLight().getXAngle();
+
+    private void findObject() {
+        if ( hasTarget = true) {
+            s_Swerve.drive(new Translation2d(1.5, 0), 0, false, true);
+            if (getXAngle > 0) {
+                s_Swerve.drive(null, -.5, false, true);
+            }
+            if (getXAngle < 0) {
+                s_Swerve.drive(null, .5, false, true);
+            }
+        }else {
+            s_Swerve.drive(null, .5, true, true);
+        }
+    };
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -56,6 +76,12 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        new JoystickButton(driver, Button.kA.value).toggleOnTrue(
+            new RunCommand(
+                () -> findObject()
+            )
+        );
     }
 
     /**
