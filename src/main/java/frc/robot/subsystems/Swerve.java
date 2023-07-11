@@ -35,7 +35,7 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(0, Constants.Swerve.Mod0.constants, true),
       new SwerveModule(1, Constants.Swerve.Mod1.constants, false),
       new SwerveModule(2, Constants.Swerve.Mod2.constants, false),
-      new SwerveModule(3, Constants.Swerve.Mod3.constants, false)
+      new SwerveModule(3, Constants.Swerve.Mod3.constants, true)
     };
 
     Timer.delay(1.0);
