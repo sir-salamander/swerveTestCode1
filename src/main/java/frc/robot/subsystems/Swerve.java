@@ -5,7 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
@@ -65,6 +71,29 @@ public class Swerve extends SubsystemBase {
     for(SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     }
+  }
+
+  /* PathPlanner */
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> {
+      //reset odeometry for the first path you run
+      if(isFirstPath){
+        this.resetOdometry(traj.getInitialHolonomicPose());
+      }
+    }),
+    new PPSwerveControllerCommand(
+      traj,
+      this::getPose,
+      Constants.Swerve.swerveKinematics, 
+      new PIDController(0, 0, 0), 
+      new PIDController(0, 0, 0), 
+      new PIDController(0, 0, 0), 
+      this::setModuleStates,
+      true,
+      this
+      )
+    );
   }
 
   /* used by swervecontrollercommand in auto */
