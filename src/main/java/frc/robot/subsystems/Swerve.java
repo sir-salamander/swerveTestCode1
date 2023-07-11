@@ -41,12 +41,12 @@ public class Swerve extends SubsystemBase {
     Timer.delay(1.0);
     resetModulesToAbsolute();
 
-    swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinmatics, getYaw(), getModulePositions());
+    swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
   }
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates = 
-      Constants.Swerve.swerveKinmatics.toSwerveModuleStates(
+      Constants.Swerve.swerveKinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
           translation.getX(),
           translation.getY(),
