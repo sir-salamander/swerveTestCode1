@@ -33,9 +33,11 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
-    
+    private void toggleTracking() {
+        trackingObject = ! trackingObject;
+    };
 
-    
+    private boolean trackingObject;
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -65,8 +67,8 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         new JoystickButton(driver, Button.kA.value).toggleOnTrue(
-            new RunCommand(
-                () -> s_Swerve.findObject(), s_Swerve
+            new InstantCommand(
+                () -> toggleTracking()
             )
         );
     }

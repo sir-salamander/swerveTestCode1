@@ -35,6 +35,8 @@ public class Swerve extends SubsystemBase {
   private limeLight LimeLight = new limeLight();
   private double getXAngle = LimeLight.getXAngle();
 
+  private boolean trackingObject;
+
   public Swerve() {
     gyro = new Pigeon2(Constants.Swerve.pidgeonID);
     gyro.configFactoryDefault();
@@ -53,22 +55,22 @@ public class Swerve extends SubsystemBase {
     swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
   }
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, boolean trackingObject) {
     SwerveModuleState[] swerveModuleStates = 
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
           translation.getX(),
           translation.getY(),
-          rotation,
+          trackingObject ? calcultaeTrackingVelocity(rotation) : rotation,
           getYaw()
           )
           : new ChassisSpeeds(
             translation.getX(),
             translation.getY(),
-            rotation
+            trackingObject ? calcultaeTrackingVelocity(rotation) : rotation
           )
       );
-    
+      this.trackingObject = trackingObject;
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
     for(SwerveModule mod : mSwerveMods) {
@@ -163,20 +165,7 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public void findObject() {
-    LimeLight.setPipeline(0);
-    if (LimeLight.hasTarget()) {
-        System.out.println("Target Aquired");
-        drive(new Translation2d(1.5, 0), 0, false, true);
-        if (getXAngle > 0) {
-            drive(new Translation2d(1.5, 0), -1, false, true);
-        }
-        if (getXAngle < 0) {
-            drive(new Translation2d(1.5, 0), 1, false, true);
-        }
-    }else {
-        System.out.println("Scanning for Targets");
-        drive(new Translation2d(0, 0), 1, false, true);
-    }
-};
+  private double calcultaeTrackingVelocity() {
+    if (LimeLight.getXAngle() !=
+  }
 }
