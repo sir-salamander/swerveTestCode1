@@ -165,7 +165,18 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  private double calcultaeTrackingVelocity() {
-    if (LimeLight.getXAngle() !=
+  private double calcultaeTrackingVelocity(double rotation) {
+    if (LimeLight.getXAngle() != 0 && Math.abs(LimeLight.getXAngle()) >= 1) {
+      double speed = 0.03; // between 0 amd 1
+      double direction = (-LimeLight.getXAngle()) / Math.abs(LimeLight.getXAngle());
+      double scaleFactor = (Math.abs(LimeLight.getXAngle())) * speed;
+      SmartDashboard.putNumber("tracking velocity", direction * scaleFactor);
+      if (scaleFactor > 2) {
+      scaleFactor = 1.4;
+      }
+      return direction * scaleFactor;
+    }
+      
+    return 0;
   }
 }
