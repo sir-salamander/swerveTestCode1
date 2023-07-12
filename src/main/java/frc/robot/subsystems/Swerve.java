@@ -32,6 +32,9 @@ public class Swerve extends SubsystemBase {
   public SwerveModule[] mSwerveMods;
   public Pigeon2 gyro;
 
+  private limeLight LimeLight = new limeLight();
+  private double getXAngle = LimeLight.getXAngle();
+
   public Swerve() {
     gyro = new Pigeon2(Constants.Swerve.pidgeonID);
     gyro.configFactoryDefault();
@@ -159,4 +162,21 @@ public class Swerve extends SubsystemBase {
       mod.setAngle(new SwerveModuleState(0,new Rotation2d(0)));
     }
   }
+
+  public void findObject() {
+    LimeLight.setPipeline(0);
+    if (LimeLight.hasTarget()) {
+        System.out.println("Target Aquired");
+        drive(new Translation2d(1.5, 0), 0, false, true);
+        if (getXAngle > 0) {
+            drive(new Translation2d(1.5, 0), -1, false, true);
+        }
+        if (getXAngle < 0) {
+            drive(new Translation2d(1.5, 0), 1, false, true);
+        }
+    }else {
+        System.out.println("Scanning for Targets");
+        drive(new Translation2d(0, 0), 1, false, true);
+    }
+};
 }

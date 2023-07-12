@@ -33,22 +33,9 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
-    private boolean hasTarget = new limeLight().hasTarget();
-    private double getXAngle = new limeLight().getXAngle();
+    
 
-    private void findObject() {
-        if ( hasTarget = true) {
-            s_Swerve.drive(new Translation2d(1.5, 0), 0, false, true);
-            if (getXAngle > 0) {
-                s_Swerve.drive(null, -.5, false, true);
-            }
-            if (getXAngle < 0) {
-                s_Swerve.drive(null, .5, false, true);
-            }
-        }else {
-            s_Swerve.drive(null, .5, true, true);
-        }
-    };
+    
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -79,7 +66,7 @@ public class RobotContainer {
 
         new JoystickButton(driver, Button.kA.value).toggleOnTrue(
             new RunCommand(
-                () -> findObject()
+                () -> s_Swerve.findObject(), s_Swerve
             )
         );
     }

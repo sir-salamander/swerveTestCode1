@@ -31,6 +31,7 @@ public class limeLight extends SubsystemBase {
 
   //Initialize fields and get NetworkTable for the first limelight
   public limeLight() {
+
     table = NetworkTableInstance.getDefault().getTable("limelight");
     tv = table.getEntry("tv");
     tx = table.getEntry("tx");
