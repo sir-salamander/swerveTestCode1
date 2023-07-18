@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,12 +36,14 @@ public class Swerve extends SubsystemBase {
   private limeLight LimeLight = new limeLight();
   private double getXAngle = LimeLight.getXAngle();
 
-  private boolean trackingObject;
+  private boolean trackingObject = false;
 
   public Swerve() {
     gyro = new Pigeon2(Constants.Swerve.pidgeonID);
     gyro.configFactoryDefault();
     zeroGyro();
+
+    
 
     mSwerveMods = new SwerveModule[] {
       new SwerveModule(0, Constants.Swerve.Mod0.constants, true),
@@ -65,7 +68,7 @@ public class Swerve extends SubsystemBase {
           getYaw()
           )
           : new ChassisSpeeds(
-            translation.getX(),
+            trackingObject ? 2.5 : translation.getX(),
             translation.getY(),
             trackingObject ? calcultaeTrackingVelocity(rotation) : rotation
           )
@@ -166,17 +169,19 @@ public class Swerve extends SubsystemBase {
   }
 
   private double calcultaeTrackingVelocity(double rotation) {
-    if (LimeLight.getXAngle() != 0 && Math.abs(LimeLight.getXAngle()) >= 1) {
-      double speed = 0.03; // between 0 amd 1
+    if (LimeLight.getXAngle() != 0 && Math.abs(LimeLight.getXAngle()) >= 0.11) {
+      double speed = 1; // between 0 amd 1
       double direction = (-LimeLight.getXAngle()) / Math.abs(LimeLight.getXAngle());
       double scaleFactor = (Math.abs(LimeLight.getXAngle())) * speed;
       SmartDashboard.putNumber("tracking velocity", direction * scaleFactor);
       if (scaleFactor > 2) {
-      scaleFactor = 1.4;
+        scaleFactor = 1.4;
       }
-      return direction * scaleFactor;
+      return -direction * scaleFactor;
     }
       
     return 0;
   }
+
+  
 }

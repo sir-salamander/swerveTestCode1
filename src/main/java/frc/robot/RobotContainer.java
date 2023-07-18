@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -29,15 +28,20 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    // private boolean robotCentric = false;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private limeLight LimeLight = new limeLight();
+
+
+    public boolean trackingObject = false;
 
     private void toggleTracking() {
-        trackingObject = ! trackingObject;
+        trackingObject = LimeLight.hasTarget();
     };
 
-    private boolean trackingObject;
+    
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -48,7 +52,8 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                () -> robotCentric.getAsBoolean(),
+                this
             )
         );
 
@@ -71,6 +76,12 @@ public class RobotContainer {
                 () -> toggleTracking()
             )
         );
+
+    //    new JoystickButton(driver, Button.kLeftBumper.value).toggleOnTrue(
+    //     new InstantCommand(
+    //         () -> robotCentric = true
+    //     )
+    //    );
     }
 
     /**
