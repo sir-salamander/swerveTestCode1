@@ -38,9 +38,14 @@ public class RobotContainer {
     public boolean trackingObject = false;
 
     private void toggleTracking() {
-        trackingObject = LimeLight.hasTarget();
-    };
+        // trackingObject = LimeLight.hasTarget();
 
+        // if (trackingObject == false) {
+        //     s_Swerve.drive(new Translation2d(0,0), 1.5, true, true, false);
+        // }
+
+        trackingObject = !trackingObject;
+    };
     
 
 
@@ -71,17 +76,11 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        new JoystickButton(driver, Button.kA.value).toggleOnTrue(
+        new JoystickButton(driver, Button.kA.value).onTrue(
             new InstantCommand(
                 () -> toggleTracking()
             )
         );
-
-    //    new JoystickButton(driver, Button.kLeftBumper.value).toggleOnTrue(
-    //     new InstantCommand(
-    //         () -> robotCentric = true
-    //     )
-    //    );
     }
 
     /**

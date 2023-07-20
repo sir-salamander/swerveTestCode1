@@ -5,9 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,7 +65,7 @@ public class Swerve extends SubsystemBase {
           getYaw()
           )
           : new ChassisSpeeds(
-            trackingObject ? 2.5 : translation.getX(),
+            trackingObject ? -2.5 : translation.getX(),
             translation.getY(),
             trackingObject ? calcultaeTrackingVelocity(rotation) : rotation
           )
@@ -82,27 +79,27 @@ public class Swerve extends SubsystemBase {
   }
 
   /* PathPlanner */
-  public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> {
-      //reset odeometry for the first path you run
-      if(isFirstPath){
-        this.resetOdometry(traj.getInitialHolonomicPose());
-      }
-    }),
-    new PPSwerveControllerCommand(
-      traj,
-      this::getPose,
-      Constants.Swerve.swerveKinematics, 
-      new PIDController(0, 0, 0), 
-      new PIDController(0, 0, 0), 
-      new PIDController(0, 0, 0), 
-      this::setModuleStates,
-      true,
-      this
-      )
-    );
-  }
+  // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+  //   return new SequentialCommandGroup(
+  //     new InstantCommand(() -> {
+  //     //reset odeometry for the first path you run
+  //     if(isFirstPath){
+  //       this.resetOdometry(traj.getInitialHolonomicPose());
+  //     }
+  //   }),
+  //   new PPSwerveControllerCommand(
+  //     traj,
+  //     this::getPose,
+  //     Constants.Swerve.swerveKinematics, 
+  //     new PIDController(0, 0, 0), 
+  //     new PIDController(0, 0, 0), 
+  //     new PIDController(0, 0, 0), 
+  //     this::setModuleStates,
+  //     true,
+  //     this
+  //     )
+  //   );
+  // }
 
   /* used by swervecontrollercommand in auto */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -170,14 +167,14 @@ public class Swerve extends SubsystemBase {
 
   private double calcultaeTrackingVelocity(double rotation) {
     if (LimeLight.getXAngle() != 0 && Math.abs(LimeLight.getXAngle()) >= 0.11) {
-      double speed = 1; // between 0 amd 1
+      double speed = .75; // between 0 amd 1
       double direction = (-LimeLight.getXAngle()) / Math.abs(LimeLight.getXAngle());
       double scaleFactor = (Math.abs(LimeLight.getXAngle())) * speed;
       SmartDashboard.putNumber("tracking velocity", direction * scaleFactor);
-      if (scaleFactor > 2) {
-        scaleFactor = 1.4;
+      if (scaleFactor > 3) {
+        scaleFactor = 2.9; //1.4
       }
-      return -direction * scaleFactor;
+      return direction * scaleFactor;
     }
       
     return 0;
