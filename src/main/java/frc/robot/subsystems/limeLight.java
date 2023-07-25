@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -28,6 +29,8 @@ public class limeLight extends SubsystemBase {
   RobotContainer m_robotContainer;
   XboxController m_controller;
   Command m_teleopCommand;
+
+  static double distance = 0;
 
   //Initialize fields and get NetworkTable for the first limelight
   public limeLight() {
@@ -86,9 +89,27 @@ public class limeLight extends SubsystemBase {
     setPipeline(targetedAprilTagId + 1);
   }
 
-  public double calculateDistance(double targetHeight) {
-    return 0;
+  double angleToGoalDegrees;
+  double angleToGoalRadians;
+  double targetHeight = Units.feetToMeters(4);
+  double LLHeight = Units.inchesToMeters(9);
+  static double targetDistance = distance * 3.281;
+
+  public double calculateDistance(double targetHeight, double LLHeight) {
+    this.targetHeight = targetHeight;
+    this.LLHeight = LLHeight;
+    if (!hasTarget()) {
+      distance = -1;
+    } else {
+      angleToGoalDegrees = getYAngle();
+      angleToGoalRadians = Math.toRadians(angleToGoalDegrees);
+    }
+
+    return distance = (
+      targetHeight - LLHeight
+    ) / Math.tan(angleToGoalRadians);
   }
+  
 
   public void updateDashboard() {
     SmartDashboard.putNumber("LimelightX", getXAngle());
@@ -96,6 +117,7 @@ public class limeLight extends SubsystemBase {
     SmartDashboard.putNumber("LimelightArea", getArea());
     SmartDashboard.putNumber("CurrentTargetedTagID", getTagID());
     SmartDashboard.putNumber("CurrentPipline", getPipline());
+    SmartDashboard.putNumber("Distance", targetDistance);
   }
 
   @Override

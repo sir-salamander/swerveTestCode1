@@ -38,15 +38,16 @@ public class RobotContainer {
     public boolean trackingObject = false;
 
     private void toggleTracking() {
-        // trackingObject = LimeLight.hasTarget();
-
-        // if (trackingObject == false) {
-        //     s_Swerve.drive(new Translation2d(0,0), 1.5, true, true, false);
-        // }
-
         trackingObject = !trackingObject;
     };
     
+    private void hastarget() {
+        if (LimeLight.hasTarget()) {
+            s_Swerve.drive(new Translation2d(5, 0), s_Swerve.calcultaeTrackingVelocity(3), false, true, true);
+        } else {
+            s_Swerve.drive(new Translation2d(0,0), 1.5, true, true, false);
+        }
+    }
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -79,6 +80,11 @@ public class RobotContainer {
         new JoystickButton(driver, Button.kA.value).onTrue(
             new InstantCommand(
                 () -> toggleTracking()
+            )
+        );
+        new JoystickButton(driver, Button.kB.value).onTrue(
+            new InstantCommand(
+                () -> hastarget()
             )
         );
     }

@@ -58,14 +58,15 @@ public class Swerve extends SubsystemBase {
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, boolean trackingObject) {
     SwerveModuleState[] swerveModuleStates = 
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-        fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-          translation.getX(),
-          translation.getY(),
-          trackingObject ? calcultaeTrackingVelocity(rotation) : rotation,
-          getYaw()
-          )
-          : new ChassisSpeeds(
-            trackingObject ? -2.5 : translation.getX(),
+        // fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+        //   translation.getX(),
+        //   translation.getY(),
+        //   trackingObject ? calcultaeTrackingVelocity(rotation) : rotation,
+        //   getYaw()
+        //   )
+        //   : 
+          new ChassisSpeeds(
+            trackingObject ? driveSpeed : translation.getX(),
             translation.getY(),
             trackingObject ? calcultaeTrackingVelocity(rotation) : rotation
           )
@@ -165,19 +166,32 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  private double calcultaeTrackingVelocity(double rotation) {
+  public double calcultaeTrackingVelocity(double rotation) {
     if (LimeLight.getXAngle() != 0 && Math.abs(LimeLight.getXAngle()) >= 0.11) {
       double speed = .75; // between 0 amd 1
       double direction = (-LimeLight.getXAngle()) / Math.abs(LimeLight.getXAngle());
       double scaleFactor = (Math.abs(LimeLight.getXAngle())) * speed;
       SmartDashboard.putNumber("tracking velocity", direction * scaleFactor);
       if (scaleFactor > 3) {
-        scaleFactor = 2.9; //1.4
+        scaleFactor = 1.8
+        ; //1.4
       }
       return direction * scaleFactor;
     }
       
     return 0;
+  }
+
+  double driveSpeed = 0;
+
+  public double drivingVelocity() {
+    if (limeLight.targetDistance >= 1) {
+      driveSpeed = 2.5;
+    } else {
+      driveSpeed = 0;
+    }
+
+    return driveSpeed;
   }
 
   
